@@ -17,7 +17,7 @@ pipeline {
         stage('Setup AWS Credentials') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-west-2') {
-                    sh 'aws sts get-caller-identity'                            
+                    bat 'aws sts get-caller-identity'                            
                 }
             }
         }
@@ -25,26 +25,26 @@ pipeline {
 
         stage('Initialize Terraform') {
             steps {
-                sh 'terraform init'
+                bat 'terraform init'
             }
         }
 
         stage('Plan Infrastructure') {
             steps {
-                sh 'terraform plan -out=tfplan'
+                bat 'terraform plan -out=tfplan'
             }
         }
 
         stage('Apply Infrastructure') {
             steps {
                 input message: 'Proceed with Terraform apply?'
-                sh 'terraform apply -auto-approve tfplan'
+                bat 'terraform apply -auto-approve tfplan'
             }
         }
 
         stage('Output Public IP') {
             steps {
-                sh 'terraform output'
+                bat 'terraform output'
             }
         }
     }
