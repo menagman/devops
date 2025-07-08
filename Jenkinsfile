@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout Terraform Code') {
             steps {
-                git url: 'https://github.com/menagman/devops.git'
+                git branch: 'main', url: 'https://github.com/menagman/devops.git'
             }
         }
 
