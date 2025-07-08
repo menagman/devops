@@ -31,15 +31,25 @@ pipeline {
 
         stage('Plan Infrastructure') {
             steps {
-                bat 'terraform plan -out=tfplan'
+                withAWS(region: 'us-west-2', credentials: 'aws-creds') {
+                    withEnv(["AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}",
+                             "AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}"]) {
+                  bat 'terraform plan -out=tfplan'
+                }
             }
+          }
         }
 
         stage('Apply Infrastructure') {
             steps {
-                input message: 'Proceed with Terraform apply?'
-                bat 'terraform apply -auto-approve tfplan'
-            }
+                withAWS(region: 'us-west-2', credentials: 'aws-creds') {
+                    withEnv(["AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}",
+                             "AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}"]) {
+                  input message: 'Proceed with Terraform apply?'
+                   bat 'terraform apply -auto-approve tfplan'
+                }
+            }  
+          }
         }
 
         stage('Output Public IP') {
